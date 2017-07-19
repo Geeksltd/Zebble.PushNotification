@@ -9,6 +9,7 @@
     <Import_RootNamespace>Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Zebble.Plugin.PushNotification.nuspec" />
+    <Content Include="$(MSBuildThisFileDirectory)Icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Nuget.nuspec" />
   </ItemGroup>
 </Project>
