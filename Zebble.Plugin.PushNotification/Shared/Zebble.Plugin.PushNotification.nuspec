@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Zebble.Plugin.PushNotification</id>
+    <version>1.0.0</version>
+    <title>PushNotification plugin for Zebble</title>
+    <projectUrl>https://zebble.net/</projectUrl>
+    <iconUrl>https://dashboard.geeksltd.co.uk/content/ZebbleNuGetIcon.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <iconUrl>https://github.com/{MyUserName}/{MyRepo}/raw/master/Shared/Icon.png</iconUrl>
+    <licenseUrl>http://zebble.net/Zebble%20-%20License%20Agreement.txt</licenseUrl>
+    <copyright>Copyright ©2017 Mobile App Technologies Ltd - All rights reserved.</copyright>
+    <description>Zebble framework for cross platform Xamarin-based solutions.</description>
+  </metadata>
+
+  <dependencies>
+
+    <group targetFramework="UAP10">
+      <dependency id="Zebble" version= "4.0.217"/>
+    </group>
+
+    <group targetFramework="MonoAndroid">
+      <dependency id="Xamarin.Firebase.Messaging" version="42.1021.1" />
+      <dependency id="Zebble" version= "4.0.217"/>
+    </group>
+
+    <group targetFramework="Xamarin.iOS10">
+      <dependency id="Zebble" version= "4.0.217"/>
+    </group>
+
+  </dependencies>
+  
+  <files>
+    <file src="lib\Zebble.Plugin.PushNotification.iOS.*" target="lib\Xamarin.iOS10\" />
+    <file src="lib\Zebble.Plugin.PushNotification.Android.*" target="lib\MonoAndroid10\" />
+    <file src="lib\Zebble.Plugin.PushNotification.UWP.*" target="lib\UAP10\" />
+  </files>
+</package>
