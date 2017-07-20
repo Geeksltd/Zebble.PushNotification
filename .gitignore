@@ -24,3 +24,4 @@ GCopReport.json
 *.lock.json
 *.csproj.bak
 Zebble-LicenseAgreement.txt
+Zebble.Plugin.PushNotification/Shared/nuget.exe

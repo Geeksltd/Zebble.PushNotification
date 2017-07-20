@@ -2,32 +2,22 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Zebble.Plugin.PushNotification</id>
-    <version>1.0.0</version>
-    <title>PushNotification plugin for Zebble for Xamarin</title>
+    <version>4.0.153</version>
+    <title>PushNotification plugin for Zebble</title>
     <projectUrl>http://zebble.net/docs/introduction-to-push-notifications</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.PushNotification/master/Zebble.Plugin.PushNotification/Shared/Icon.png</iconUrl>
     <copyright>Copyright ©2017 Mobile App Technologies Ltd - All rights reserved.</copyright>
     <authors>Mobile App Technologies Ltd</authors>
     <description>Cross platform push notification plugin for Zebble for Xamarin.</description>
-
-
     <dependencies>
-
-      <group targetFramework="UAP10">
-        <dependency id="Zebble" version= "4.0.221"/>
-      </group>
-
-      <group targetFramework="MonoAndroid">
+      <group targetFramework="MonoAndroid10">
         <dependency id="Xamarin.Firebase.Messaging" version="42.1021.1" />
         <dependency id="Zebble" version= "4.0.221"/>
       </group>
-
       <group targetFramework="Xamarin.iOS10">
         <dependency id="Zebble" version= "4.0.221"/>
       </group>
-
     </dependencies>
-
   </metadata>
 
   <files>

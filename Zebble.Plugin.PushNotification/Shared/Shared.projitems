@@ -9,7 +9,7 @@
     <Import_RootNamespace>Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Icon.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Nuget.nuspec" />
+    <None Include="$(MSBuildThisFileDirectory)Icon.png" />
+    <None Include="$(MSBuildThisFileDirectory)Nuget.nuspec" />
   </ItemGroup>
 </Project>
