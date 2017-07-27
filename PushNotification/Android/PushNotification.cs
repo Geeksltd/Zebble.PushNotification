@@ -16,7 +16,7 @@ namespace Zebble.Plugin
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class PushNotification : DevicePushNotification.INativeImplementation
     {
-        static string SenderId => Framework.Config.Get("Push.Notification.Android.Sender.ID");
+        static string SenderId => Config.Get("Push.Notification.Android.Sender.ID");
         static Context Context => UIRuntime.CurrentActivity;
 
         public async Task DoRegister()

@@ -2,10 +2,7 @@
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.3",
     "Newtonsoft.Json": "9.0.1",
-    "System.ComponentModel": "4.3.0",
-    "System.Data.Common": "4.3.0",
-    "System.Threading": "4.3.0",
-    "Zebble": "4.0.220"
+    "Zebble": "4.0.247"
   },
   "frameworks": {
     "uap10.0": {}
