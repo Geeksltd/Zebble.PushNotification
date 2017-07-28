@@ -1,15 +1,15 @@
 namespace Zebble.Plugin
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
-    using Newtonsoft.Json.Linq;
     using System.Threading.Tasks;
+    using Android.App;
     using Android.Content;
     using Firebase.Iid;
     using Firebase.Messaging;
-    using Android.App;
     using Java.IO;
-    using System.Collections.Generic;
+    using Newtonsoft.Json.Linq;
     using Zebble;
     using Zebble.NativeImpl;
 

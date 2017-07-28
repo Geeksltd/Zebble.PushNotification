@@ -10,6 +10,14 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Icon.png" />
-    <None Include="$(MSBuildThisFileDirectory)Nuget.nuspec" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\%40CreatePackage.bat" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\nuget.exe" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\Nuget.nuspec" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\Zebble.Plugin.PushNotification.4.0.157.nupkg" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\Zebble.Plugin.PushNotification.4.0.161.nupkg" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\Zebble.Plugin.PushNotification.4.0.162.nupkg" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\Zebble.Plugin.PushNotification.4.0.163.nupkg" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\Zebble.Plugin.PushNotification.4.0.164.nupkg" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\Zebble.Plugin.PushNotification.4.0.165.nupkg" />
   </ItemGroup>
 </Project>
