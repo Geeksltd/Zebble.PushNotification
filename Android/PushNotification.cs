@@ -17,13 +17,12 @@ namespace Zebble.Plugin
     public class PushNotification : DevicePushNotification.INativeImplementation
     {
         static string SenderId => Config.Get("Push.Notification.Android.Sender.ID");
-        static Context Context => UIRuntime.CurrentActivity;
 
         public async Task DoRegister()
         {
             try
             {
-                Firebase.FirebaseApp.InitializeApp(Context);
+                Firebase.FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
                 var token = FirebaseInstanceId.Instance.Token;
                 await Device.PushNotification.Registered.RaiseOn(Device.ThreadPool, token);
             }
