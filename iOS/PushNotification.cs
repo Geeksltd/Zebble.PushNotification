@@ -72,7 +72,7 @@ namespace Zebble.Plugin
 
             var notification = new NotificationMessage(values);
             await Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notification);
-            return notification.ReceivedNewData;
+            return true;
         }
 
         public async Task OnRegisteredSuccess(object token)

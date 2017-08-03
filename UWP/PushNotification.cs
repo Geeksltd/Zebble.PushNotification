@@ -22,10 +22,7 @@ namespace Zebble.Plugin
                 var notifcation = new NotificationMessage(JObject.FromObject(data, Serializer));
                 await Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notifcation);
 
-                if (notifcation.ReceivedNewData)
-                {
-                    // TODO: How to increase the badge number?
-                }
+                // TODO: How to increase the badge number?
             };
 
             var args = message as PushNotificationReceivedEventArgs;
