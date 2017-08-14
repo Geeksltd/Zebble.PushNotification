@@ -3,12 +3,12 @@
   <metadata>
     <id>Zebble.Plugin.PushNotification</id>
     <version>4.0.167</version>
-    <title>Push Notification for Zebble</title>
+    <title>Push Notification (Zebble)</title>
     <projectUrl>https://github.com/Geeksltd/Zebble.PushNotification</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.PushNotification/master/Shared/Icon.png</iconUrl>
     <copyright>Copyright ©2017 Mobile App Technologies Ltd - All rights reserved.</copyright>
     <authors>Mobile App Technologies Ltd</authors>
-    <description>Cross platform push notification plugin for Zebble for Xamarin.</description>
+    <description>Cross platform push notification plugin for Zebble apps.</description>
     <dependencies>
       <group targetFramework="MonoAndroid10">
         <dependency id="Xamarin.Firebase.Messaging" version="42.1021.1" />
