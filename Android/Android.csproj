@@ -93,7 +93,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Zebble.Android, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zebble.4.2.315\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
+      <HintPath>..\packages\Zebble.4.2.341\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
