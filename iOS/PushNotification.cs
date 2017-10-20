@@ -52,8 +52,17 @@ namespace Zebble.Plugin
                             if (!values.TryGetValue(node.Key.ToString(), out var temp))
                                 values.Add(node.Key.ToString(), node.Value.ToString());
 
-            var notification = new NotificationMessage(values);
-            await Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notification);
+            if (Device.PushNotification.ReceivedMessage.IsHandled())
+            {
+                var notification = new NotificationMessage(values);
+                await Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notification);
+            }
+            else
+            {
+                var applicationName = NSBundle.MainBundle.InfoDictionary.ObjectForKey(NSObject.FromObject("CFBundleName")).ToString();
+                await Device.LocalNotification.Show(applicationName, values["body"].Value<string>());
+            }
+
             return true;
         }
 

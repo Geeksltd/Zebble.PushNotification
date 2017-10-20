@@ -19,10 +19,19 @@ namespace Zebble.Plugin
         {
             async void report(object data)
             {
-                var notifcation = new NotificationMessage(JObject.FromObject(data, Serializer));
-                await Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notifcation);
+                var values = JObject.FromObject(data, Serializer);
+                if (Device.PushNotification.ReceivedMessage.IsHandled())
+                {
+                    var notifcation = new NotificationMessage(values);
+                    await Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notifcation);
 
-                // TODO: How to increase the badge number?
+                    // TODO: How to increase the badge number?
+                }
+                else
+                {
+                    var applicationName = Windows.ApplicationModel.Package.Current.DisplayName;
+                    await Device.LocalNotification.Show(applicationName, values["body"].Value<string>());
+                }
             };
 
             var args = message as PushNotificationReceivedEventArgs;

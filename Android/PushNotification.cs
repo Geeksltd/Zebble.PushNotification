@@ -12,6 +12,7 @@ namespace Zebble.Plugin
     using Newtonsoft.Json.Linq;
     using Zebble;
     using Zebble.NativeImpl;
+    using Newtonsoft.Json;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class PushNotification : DevicePushNotification.INativeImplementation
@@ -80,18 +81,32 @@ namespace Zebble.Plugin
             static Context Context => UIRuntime.CurrentActivity;
             public override void OnMessageReceived(RemoteMessage message)
             {
-                var parameters = new Dictionary<string, object>();
-                var values = new JObject();
-                foreach (var data in message.Data)
+                var notificationObject = message.GetNotification();
+                var notifyMessage = new AndroidNotificationMessage
                 {
-                    try { values.Add(data.Key, JObject.Parse(data.Value)); }
-                    catch { values.Add(data.Key, data.Value); }
+                    body = notificationObject.Body,
+                    bodyLocalizationKey = notificationObject.BodyLocalizationKey,
+                    clickAction = notificationObject.ClickAction,
+                    color = notificationObject.Color,
+                    icon = notificationObject.Icon,
+                    link = notificationObject.Link,
+                    sound = notificationObject.Sound,
+                    tag = notificationObject.Tag,
+                    title  = notificationObject.Title,
+                    titleLocalizationKey = notificationObject.TitleLocalizationKey
+                };
 
-                    parameters.Add(data.Key, data);
+                if (Device.PushNotification.ReceivedMessage.IsHandled())
+                {
+                    var values = JObject.Parse(JsonConvert.SerializeObject(notifyMessage));
+                    var notification = new NotificationMessage(values);
+                    Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notification);
                 }
-
-                var notification = new NotificationMessage(values);
-                Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notification);
+                else
+                {
+                    var applicationName = UIRuntime.CurrentActivity.ApplicationInfo.LoadLabel(UIRuntime.CurrentActivity.PackageManager);
+                    Device.LocalNotification.Show(applicationName, message.GetNotification().Body);
+                }
             }
         }
 
@@ -100,5 +115,20 @@ namespace Zebble.Plugin
         public async Task OnRegisteredSuccess(object token) { }
 
         public async Task OnUnregisteredSuccess() { }
+
+        [EscapeGCop("LowerCase property name is ok.")]
+        internal class AndroidNotificationMessage
+        {
+            public string body { get; set; }
+            public string bodyLocalizationKey { get; set; }
+            public string clickAction { get; set; }
+            public string color { get; set; }
+            public string icon { get; set; }
+            public Android.Net.Uri link { get; set; }
+            public string sound { get; set; }
+            public string tag { get; set; }
+            public string title { get; set; }
+            public string titleLocalizationKey { get; set; }
+        }
     }
 }
