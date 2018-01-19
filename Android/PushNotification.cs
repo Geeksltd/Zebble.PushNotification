@@ -1,7 +1,6 @@
-namespace Zebble.Plugin
+namespace Zebble.Device
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Threading.Tasks;
     using Android.App;
@@ -10,22 +9,22 @@ namespace Zebble.Plugin
     using Firebase.Messaging;
     using Java.IO;
     using Newtonsoft.Json.Linq;
-    using Zebble;
-    using Zebble.NativeImpl;
     using Newtonsoft.Json;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class PushNotification : DevicePushNotification.INativeImplementation
+    partial class PushNotification
     {
         static string SenderId => Config.Get("Push.Notification.Android.Sender.ID");
 
-        public async Task DoRegister()
+        static void Init() { }
+
+        static async Task DoRegister()
         {
             try
             {
                 Firebase.FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
                 var token = FirebaseInstanceId.Instance.Token;
-                await Device.PushNotification.Registered.RaiseOn(Device.ThreadPool, token);
+                await Registered.RaiseOn(Thread.Pool, token);
             }
             catch (Exception ex)
             {
@@ -33,41 +32,41 @@ namespace Zebble.Plugin
             }
         }
 
-        public Task DoUnregister() => Device.ThreadPool.Run(DoUnregisterOnThreadPool);
+        static Task DoUnregister() => Thread.Pool.Run(DoUnregisterOnThreadPool);
 
-        async Task DoUnregisterOnThreadPool()
+        static async Task DoUnregisterOnThreadPool()
         {
             try
             {
                 FirebaseInstanceId.Instance.DeleteToken(SenderId, FirebaseMessaging.InstanceIdScope);
-                await Device.PushNotification.UnRegistered.RaiseOn(Device.ThreadPool);
+                await UnRegistered.RaiseOn(Thread.Pool);
             }
             catch (IOException ex)
             {
-                await Device.PushNotification.ReceivedError.RaiseOn(Device.ThreadPool, "Failed to unregister Push Notification: " + ex);
+                await ReceivedError.RaiseOn(Thread.Pool, "Failed to unregister Push Notification: " + ex);
             }
         }
 
         [Service(Exported = false)]
         [IntentFilter(new string[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
-        public class RefreshService : FirebaseInstanceIdService
+        internal class RefreshService : FirebaseInstanceIdService
         {
             // Called if InstanceID token is updated. This may occur if the security of the previous token had been compromised. This call is initiated by the InstanceID provider.
             public override void OnTokenRefresh()
             {
                 base.OnTokenRefresh();
 
-                Device.ThreadPool.RunAction(async () =>
+                Thread.Pool.RunAction(async () =>
                 {
                     try
                     {
                         var token = FirebaseInstanceId.Instance.Token;
-                        await Device.PushNotification.Registered.RaiseOn(Device.ThreadPool, token);
+                        await Registered.RaiseOn(Thread.Pool, token);
                         Device.Log.Message("Refreshed token: " + token);
                     }
                     catch (Exception ex)
                     {
-                        await Device.PushNotification.ReceivedError.RaiseOn(Device.ThreadPool,
+                        await ReceivedError.RaiseOn(Thread.Pool,
                             "Failed to refresh the installation ID: " + ex);
                     }
                 });
@@ -76,7 +75,7 @@ namespace Zebble.Plugin
 
         [Service]
         [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
-        public class PushNotificationGcmListener : FirebaseMessagingService
+        internal class PushNotificationGcmListener : FirebaseMessagingService
         {
             static Context Context => UIRuntime.CurrentActivity;
             public override void OnMessageReceived(RemoteMessage message)
@@ -92,29 +91,29 @@ namespace Zebble.Plugin
                     link = notificationObject.Link,
                     sound = notificationObject.Sound,
                     tag = notificationObject.Tag,
-                    title  = notificationObject.Title,
+                    title = notificationObject.Title,
                     titleLocalizationKey = notificationObject.TitleLocalizationKey
                 };
 
-                if (Device.PushNotification.ReceivedMessage.IsHandled())
+                if (ReceivedMessage.IsHandled())
                 {
                     var values = JObject.Parse(JsonConvert.SerializeObject(notifyMessage));
                     var notification = new NotificationMessage(values);
-                    Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notification);
+                    ReceivedMessage.RaiseOn(Thread.Pool, notification);
                 }
                 else
                 {
                     var applicationName = UIRuntime.CurrentActivity.ApplicationInfo.LoadLabel(UIRuntime.CurrentActivity.PackageManager);
-                    Device.LocalNotification.Show(applicationName, message.GetNotification().Body);
+                    LocalNotification.Show(applicationName, message.GetNotification().Body);
                 }
             }
         }
 
-        public async Task<bool> OnMessageReceived(object message) { return true; }
+        static async Task<bool> OnMessageReceived(object message) { return true; }
 
-        public async Task OnRegisteredSuccess(object token) { }
+        static async Task OnRegisteredSuccess(object token) { }
 
-        public async Task OnUnregisteredSuccess() { }
+        static async Task OnUnregisteredSuccess() { }
 
         [EscapeGCop("LowerCase property name is ok.")]
         internal class AndroidNotificationMessage

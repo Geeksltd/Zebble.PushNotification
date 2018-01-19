@@ -1,36 +1,35 @@
-namespace Zebble.Plugin
+namespace Zebble.Device
 {
     using System;
     using System.ComponentModel;
-    using Zebble;
     using System.Threading.Tasks;
     using Windows.Networking.PushNotifications;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using Zebble.NativeImpl;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class PushNotification : DevicePushNotification.INativeImplementation
+    partial class PushNotification
     {
-        PushNotificationChannel Channel;
-        readonly JsonSerializer Serializer = new JsonSerializer { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+        static PushNotificationChannel Channel;
+        readonly static JsonSerializer Serializer = new JsonSerializer { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
 
-        public Task<bool> OnMessageReceived(object message)
+        static void Init() { }
+
+        static Task<bool> OnMessageReceived(object message)
         {
             async void report(object data)
             {
                 var values = JObject.FromObject(data, Serializer);
-                if (Device.PushNotification.ReceivedMessage.IsHandled())
+                if (ReceivedMessage.IsHandled())
                 {
                     var notifcation = new NotificationMessage(values);
-                    await Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notifcation);
-
+                    await ReceivedMessage.RaiseOn(Thread.Pool, notifcation);
                     // TODO: How to increase the badge number?
                 }
                 else
                 {
                     var applicationName = Windows.ApplicationModel.Package.Current.DisplayName;
-                    await Device.LocalNotification.Show(applicationName, values["body"].Value<string>());
+                    await LocalNotification.Show(applicationName, values["body"].Value<string>());
                 }
             };
 
@@ -52,17 +51,17 @@ namespace Zebble.Plugin
             return Task.FromResult(result: true);
         }
 
-        public async Task DoRegister()
+        static async Task DoRegister()
         {
             Channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync()
                 .AsTask();
 
             Channel.PushNotificationReceived += OnReceived;
 
-            await Device.PushNotification.Registered.RaiseOn(Device.ThreadPool, Channel?.Uri);
+            await Registered.RaiseOn(Thread.Pool, Channel?.Uri);
         }
 
-        public Task DoUnregister()
+        static Task DoUnregister()
         {
             if (Channel != null)
             {
@@ -70,13 +69,13 @@ namespace Zebble.Plugin
                 Channel = null;
             }
 
-            return Device.PushNotification.UnRegistered.RaiseOn(Device.ThreadPool);
+            return UnRegistered.RaiseOn(Thread.Pool);
         }
 
-        void OnReceived(PushNotificationChannel _, PushNotificationReceivedEventArgs args) => OnMessageReceived(args);
+        static void OnReceived(PushNotificationChannel _, PushNotificationReceivedEventArgs args) => OnMessageReceived(args);
 
-        public async Task OnRegisteredSuccess(object token) { }
+        static async Task OnRegisteredSuccess(object token) { }
 
-        public async Task OnUnregisteredSuccess() { }
+        static async Task OnUnregisteredSuccess() { }
     }
 }

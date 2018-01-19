@@ -1,10 +1,11 @@
 ﻿{
   "dependencies": {
     "Newtonsoft.Json": "9.0.1",
-    "Zebble": "4.2.364"
+    "Zebble": "4.3.100",
+    "Zebble.LocalNotification": "1.0.102"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0.10240": {}
   },
   "runtimes": {
     "win10-arm": {},

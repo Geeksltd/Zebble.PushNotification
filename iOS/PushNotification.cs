@@ -1,22 +1,27 @@
-namespace Zebble.Plugin
+namespace Zebble.Device
 {
     using System;
     using System.ComponentModel;
     using Newtonsoft.Json.Linq;
-    using Zebble;
     using System.Threading.Tasks;
     using Foundation;
     using UIKit;
-    using Zebble.NativeImpl;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class PushNotification : DevicePushNotification.INativeImplementation
+    partial class PushNotification
     {
-        public Task DoRegister()
+        static void Init()
+        {
+            UIRuntime.DidReceiveRemoteNotification += OnMessageReceived;
+            UIRuntime.RegisteredForRemoteNotifications.Handle(OnRegisteredSuccess);
+            UIRuntime.FailedToRegisterForRemoteNotifications.Handle((error) => ReceivedError.RaiseOn(Thread.Pool, error.LocalizedDescription));
+        }
+
+        static Task DoRegister()
         {
             var app = UIApplication.SharedApplication;
 
-            if (Device.OS.IsAtLeastiOS(8, 0))
+            if (OS.IsAtLeastiOS(8, 0))
             {
                 app.RegisterUserNotificationSettings(
                     UIUserNotificationSettings.GetSettingsForTypes(UIUserNotificationType.Alert |
@@ -31,13 +36,13 @@ namespace Zebble.Plugin
             return Task.CompletedTask;
         }
 
-        public Task DoUnregister()
+        static Task DoUnregister()
         {
             UIApplication.SharedApplication.UnregisterForRemoteNotifications();
             return OnUnregisteredSuccess();
         }
 
-        public async Task<bool> OnMessageReceived(object message)
+        static async Task<bool> OnMessageReceived(object message)
         {
             var userInfo = (NSDictionary)message;
 
@@ -52,34 +57,34 @@ namespace Zebble.Plugin
                             if (!values.TryGetValue(node.Key.ToString(), out var temp))
                                 values.Add(node.Key.ToString(), node.Value.ToString());
 
-            if (Device.PushNotification.ReceivedMessage.IsHandled())
+            if (ReceivedMessage.IsHandled())
             {
                 var notification = new NotificationMessage(values);
-                await Device.PushNotification.ReceivedMessage.RaiseOn(Device.ThreadPool, notification);
+                await ReceivedMessage.RaiseOn(Thread.Pool, notification);
             }
             else
             {
                 var applicationName = NSBundle.MainBundle.InfoDictionary.ObjectForKey(NSObject.FromObject("CFBundleName")).ToString();
-                await Device.LocalNotification.Show(applicationName, values["body"].Value<string>());
+                await LocalNotification.Show(applicationName, values["body"].Value<string>());
             }
 
             return true;
         }
 
-        public async Task OnRegisteredSuccess(object token)
+        static async Task OnRegisteredSuccess(object token)
         {
             var cleanToken = (token as NSData)?.Description.OrEmpty().Trim().Remove(" ").Trim('<', '>').Trim();
-            await Device.PushNotification.Registered.RaiseOn(Device.ThreadPool, cleanToken);
+            await Registered.RaiseOn(Thread.Pool, cleanToken);
             SetUserDefault(cleanToken);
         }
 
-        public async Task OnUnregisteredSuccess()
+        static async Task OnUnregisteredSuccess()
         {
-            await Device.PushNotification.UnRegistered.RaiseOn(Device.ThreadPool);
+            await UnRegistered.RaiseOn(Thread.Pool);
             SetUserDefault(string.Empty);
         }
 
-        void SetUserDefault(string token)
+        static void SetUserDefault(string token)
         {
             NSUserDefaults.StandardUserDefaults.SetString(token, "token");
             NSUserDefaults.StandardUserDefaults.Synchronize();
