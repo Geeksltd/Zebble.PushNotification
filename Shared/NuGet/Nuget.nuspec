@@ -12,6 +12,13 @@
     <dependencies>
       <group targetFramework="MonoAndroid10">
         <dependency id="Xamarin.Firebase.Messaging" version="42.1021.1" />
+        <dependency id="Zebble.LocalNotification" version="1.0.102" />
+      </group>
+      <group targetFramework="Xamarin.iOS10">
+        <dependency id="Zebble.LocalNotification" version="1.0.102" />
+      </group>
+      <group targetFramework="UAP10">
+        <dependency id="Zebble.LocalNotification" version="1.0.102" />
       </group>
     </dependencies>
   </metadata>
