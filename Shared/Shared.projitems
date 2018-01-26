@@ -13,7 +13,6 @@
     <None Include="$(MSBuildThisFileDirectory)NuGet\%40CreatePackage.bat" />
     <None Include="$(MSBuildThisFileDirectory)NuGet\nuget.exe" />
     <None Include="$(MSBuildThisFileDirectory)NuGet\Nuget.nuspec" />
-    <None Include="$(MSBuildThisFileDirectory)NuGet\Zebble.Plugin.PushNotification.4.0.165.nupkg" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)PushNotification.cs" />

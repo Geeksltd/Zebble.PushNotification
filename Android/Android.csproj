@@ -92,10 +92,10 @@
       <HintPath>..\packages\Xamarin.GooglePlayServices.Tasks.60.1142.0\lib\MonoAndroid80\Xamarin.GooglePlayServices.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="Zebble.Android, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zebble.4.3.100\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
+      <HintPath>..\packages\Zebble.4.4.100\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
     </Reference>
     <Reference Include="Zebble.LocalNotification.Android, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zebble.LocalNotification.1.0.102\lib\MonoAndroid10\Zebble.LocalNotification.Android.dll</HintPath>
+      <HintPath>..\packages\Zebble.LocalNotification.1.0.103\lib\MonoAndroid10\Zebble.LocalNotification.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
