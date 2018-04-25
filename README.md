@@ -1,4 +1,4 @@
-[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.PushNotification/master/Shared/NuGet/Icon.png "Zebble.PushNotification"
+[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.PushNotification/master/Shared/Icon.png "Zebble.PushNotification"
 
 
 ## Zebble.PushNotification
