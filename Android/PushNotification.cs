@@ -1,15 +1,15 @@
 namespace Zebble.Device
 {
-    using System;
-    using System.ComponentModel;
-    using System.Threading.Tasks;
     using Android.App;
     using Android.Content;
     using Firebase.Iid;
     using Firebase.Messaging;
     using Java.IO;
-    using Newtonsoft.Json.Linq;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using System;
+    using System.ComponentModel;
+    using System.Threading.Tasks;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     partial class PushNotification
@@ -98,7 +98,13 @@ namespace Zebble.Device
                 if (ReceivedMessage.IsHandled())
                 {
                     var values = JObject.Parse(JsonConvert.SerializeObject(notifyMessage));
-                    var notification = new NotificationMessage(values);
+                    var notification = new Zebble.Device.LocalNotification.Notification
+                    {
+                        Title = notificationObject.Title,
+                        Body = notificationObject.Body,
+                        NotifyTime = LocalTime.Now,
+                    };
+
                     ReceivedMessage.RaiseOn(Thread.Pool, notification);
                 }
                 else

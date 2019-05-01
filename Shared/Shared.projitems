@@ -10,8 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Icon.png" />
-    <None Include="$(MSBuildThisFileDirectory)NuGet\%40CreatePackage.bat" />
-    <None Include="$(MSBuildThisFileDirectory)NuGet\nuget.exe" />
     <None Include="$(MSBuildThisFileDirectory)NuGet\Nuget.nuspec" />
   </ItemGroup>
   <ItemGroup>

@@ -2,11 +2,12 @@ namespace Zebble.Device
 {
     using System;
     using System.Threading.Tasks;
+    using static Zebble.Device.LocalNotification;
 
     public static partial class PushNotification
     {
         /// <summary>The event parameter contains the values.</summary>
-        public static readonly AsyncEvent<NotificationMessage> ReceivedMessage = new AsyncEvent<NotificationMessage>();
+        public static readonly AsyncEvent<Notification> ReceivedMessage = new AsyncEvent<Notification>();
 
         /// <summary>
         /// When first an installed app registers to receive push notifications,

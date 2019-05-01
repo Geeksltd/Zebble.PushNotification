@@ -1,11 +1,11 @@
 namespace Zebble.Device
 {
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
     using Windows.Networking.PushNotifications;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     partial class PushNotification
@@ -22,8 +22,14 @@ namespace Zebble.Device
                 var values = JObject.FromObject(data, Serializer);
                 if (ReceivedMessage.IsHandled())
                 {
-                    var notifcation = new NotificationMessage(values);
-                    await ReceivedMessage.RaiseOn(Thread.Pool, notifcation);
+                    var notification = new Zebble.Device.LocalNotification.Notification
+                    {
+                        Title = values["title"].ToString(),
+                        Body = values["body"].ToString(),
+                        NotifyTime = LocalTime.Now,
+                    };
+
+                    await ReceivedMessage.RaiseOn(Thread.Pool, notification);
                     // TODO: How to increase the badge number?
                 }
                 else

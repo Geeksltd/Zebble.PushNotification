@@ -1,10 +1,10 @@
 namespace Zebble.Device
 {
+    using Foundation;
+    using Newtonsoft.Json.Linq;
     using System;
     using System.ComponentModel;
-    using Newtonsoft.Json.Linq;
     using System.Threading.Tasks;
-    using Foundation;
     using UIKit;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -59,7 +59,12 @@ namespace Zebble.Device
 
             if (ReceivedMessage.IsHandled())
             {
-                var notification = new NotificationMessage(values);
+                var notification = new Zebble.Device.LocalNotification.Notification
+                {
+                    Title = values["title"].ToString(),
+                    Body = values["body"].ToString(),
+                    NotifyTime = LocalTime.Now,
+                };
                 await ReceivedMessage.RaiseOn(Thread.Pool, notification);
             }
             else
