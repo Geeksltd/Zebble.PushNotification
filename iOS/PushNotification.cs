@@ -4,6 +4,7 @@ namespace Zebble.Device
     using Newtonsoft.Json.Linq;
     using System;
     using System.ComponentModel;
+    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using UIKit;
 
@@ -76,9 +77,12 @@ namespace Zebble.Device
             return true;
         }
 
-        static async Task OnRegisteredSuccess(object token)
+        static async Task OnRegisteredSuccess(NSData token)
         {
-            var cleanToken = (token as NSData)?.Description.OrEmpty().Trim().Remove(" ").Trim('<', '>').Trim();
+            byte[] result = new byte[token.Length];
+            Marshal.Copy(token.Bytes, result, 0, (int)token.Length);
+            var cleanToken = BitConverter.ToString(result).Replace("-", "");
+
             await Registered.RaiseOn(Thread.Pool, cleanToken);
             SetUserDefault(cleanToken);
         }
