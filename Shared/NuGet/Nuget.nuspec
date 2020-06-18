@@ -2,11 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Zebble.PushNotification</id>
-    <version>4.0.183</version>
+    <version>4.0.184</version>
     <title>Push Notification (Zebble)</title>
     <projectUrl>https://github.com/Geeksltd/Zebble.PushNotification</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.PushNotification/master/Shared/Icon.png</iconUrl>
-    <copyright>Copyright © 2019 Geeks Ltd - All rights reserved.</copyright>
+    <copyright>Copyright © 2020 Geeks Ltd - All rights reserved.</copyright>
     <authors>Geeks Ltd</authors>
     <description>Cross platform push notification plugin for Zebble apps.</description>
     <dependencies>
