@@ -18,13 +18,15 @@ namespace Zebble.Device
 
         static void Init() { }
 
-        static async Task DoRegister()
+        static Task DoRegister()
         {
             try
             {
                 Firebase.FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
-                var token = FirebaseInstanceId.Instance.Token;
-                await Registered.RaiseOn(Thread.Pool, token);
+                FirebaseInstanceId.Instance.GetInstanceId()
+                    .AddOnCompleteListener(UIRuntime.CurrentActivity, new OnCompleteListener());
+
+                return Task.CompletedTask;
             }
             catch (Exception ex)
             {
@@ -47,22 +49,37 @@ namespace Zebble.Device
             }
         }
 
-        [Service(Exported = false)]
-        [IntentFilter(new string[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
-        internal class RefreshService : FirebaseInstanceIdService
+        internal class OnCompleteListener : Java.Lang.Object, Android.Gms.Tasks.IOnCompleteListener
         {
-            // Called if InstanceID token is updated. This may occur if the security of the previous token had been compromised. This call is initiated by the InstanceID provider.
-            public override void OnTokenRefresh()
+            public async void OnComplete(Android.Gms.Tasks.Task task)
             {
-                base.OnTokenRefresh();
+                if (!task.IsSuccessful)
+                {
+                    Log.Error("Push-Notification retrieving token was not successful!");
+                    return;
+                }
+
+                var currentTask = task.Result as IInstanceIdResult;
+                if (currentTask != null)
+                    await Registered.RaiseOn(Thread.Pool, currentTask.Token);
+            }
+        }
+
+        [Service]
+        [IntentFilter(new [] { "com.google.firebase.INSTANCE_ID_EVENT" })]
+        internal class RefreshService : FirebaseMessagingService
+        {
+            public override void OnNewToken(string p0)
+            {
+                base.OnNewToken(p0);
 
                 Thread.Pool.RunAction(async () =>
                 {
                     try
                     {
-                        var token = FirebaseInstanceId.Instance.Token;
+                        var token = p0;
                         await Registered.RaiseOn(Thread.Pool, token);
-                        Device.Log.Message("Refreshed token: " + token);
+                        Log.Message("Refreshed token: " + token);
                     }
                     catch (Exception ex)
                     {
@@ -74,7 +91,7 @@ namespace Zebble.Device
         }
 
         [Service]
-        [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
+        [IntentFilter(new [] { "com.google.firebase.MESSAGING_EVENT" })]
         internal class PushNotificationGcmListener : FirebaseMessagingService
         {
             static Context Context => UIRuntime.CurrentActivity;
