@@ -11,8 +11,8 @@
     <description>Cross platform push notification plugin for Zebble apps.</description>
     <dependencies>
       <group targetFramework="MonoAndroid10">
-        <dependency id="Xamarin.Firebase.Messaging" version="42.1021.1" />
-        <dependency id="Zebble.LocalNotification" version="1.0.103" />
+        <dependency id="Xamarin.Firebase.Messaging" version="120.1.7-preview01" />
+        <dependency id="Zebble.LocalNotification" version="1.1.139" />
       </group>
       <group targetFramework="Xamarin.iOS10">
         <dependency id="Zebble.LocalNotification" version="1.0.103" />
