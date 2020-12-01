@@ -2,6 +2,7 @@ namespace Zebble.Device
 {
     using Android.App;
     using Android.Content;
+    using Android.Gms.Extensions;
     using Firebase.Iid;
     using Firebase.Messaging;
     using Java.IO;
@@ -59,7 +60,7 @@ namespace Zebble.Device
                     return;
                 }
 
-                var currentTask = task.Result as IInstanceIdResult;
+                var currentTask = await task.AsAsync<IInstanceIdResult>();
                 if (currentTask != null)
                     await Registered.RaiseOn(Thread.Pool, currentTask.Token);
             }
