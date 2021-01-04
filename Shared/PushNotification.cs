@@ -24,9 +24,9 @@ namespace Zebble.Device
         /// You should invoke your service API to remove the push notification token
         /// from the app user record (whatever it is in your domain) for this device.
         /// </summary>
-        public static readonly AsyncEvent UnRegistered = new AsyncEvent();
+        public static readonly AsyncEvent Unregistered = new AsyncEvent();
 
-        /// <summary>Thsi event is fired when something goes wrong.
+        /// <summary>This event is fired when something goes wrong.
         /// The event parameter is the error message.</summary>
         public static readonly AsyncEvent<string> ReceivedError = new AsyncEvent<string>();
 
@@ -50,7 +50,7 @@ namespace Zebble.Device
             try { await Thread.UI.Run(DoUnregister); }
             catch (Exception ex)
             {
-                await errorAction.Apply(ex, "Failed to unregister from push notification.");
+                await errorAction.Apply(ex, "Failed to un-register from push notification.");
             }
         }
 

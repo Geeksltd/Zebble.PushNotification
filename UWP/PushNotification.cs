@@ -6,23 +6,24 @@ namespace Zebble.Device
     using System.ComponentModel;
     using System.Threading.Tasks;
     using Windows.Networking.PushNotifications;
+    using Olive;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     partial class PushNotification
     {
         static PushNotificationChannel Channel;
-        readonly static JsonSerializer Serializer = new JsonSerializer { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+        static readonly JsonSerializer Serializer = new JsonSerializer { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
 
         static void Init() { }
 
         static Task<bool> OnMessageReceived(object message)
         {
-            async void report(object data)
+            static async void Report(object data)
             {
                 var values = JObject.FromObject(data, Serializer);
                 if (ReceivedMessage.IsHandled())
                 {
-                    var notification = new Zebble.Device.LocalNotification.Notification
+                    var notification = new LocalNotification.Notification
                     {
                         Title = values["title"].ToString(),
                         Body = values["body"].ToString(),
@@ -43,15 +44,13 @@ namespace Zebble.Device
 
             switch (args.NotificationType)
             {
-                case PushNotificationType.Raw: report(args.RawNotification); break;
-                case PushNotificationType.Badge: report(args.BadgeNotification); break;
-                case PushNotificationType.Toast: report(args.ToastNotification); break;
+                case PushNotificationType.Raw: Report(args.RawNotification); break;
+                case PushNotificationType.Badge: Report(args.BadgeNotification); break;
+                case PushNotificationType.Toast: Report(args.ToastNotification); break;
 
                 case PushNotificationType.Tile:
                 case PushNotificationType.TileFlyout:
-                    report(args.TileNotification); break;
-
-                default: break;
+                    Report(args.TileNotification); break;
             }
 
             return Task.FromResult(result: true);
@@ -75,13 +74,13 @@ namespace Zebble.Device
                 Channel = null;
             }
 
-            return UnRegistered.RaiseOn(Thread.Pool);
+            return Unregistered.RaiseOn(Thread.Pool);
         }
 
         static void OnReceived(PushNotificationChannel _, PushNotificationReceivedEventArgs args) => OnMessageReceived(args);
 
-        static async Task OnRegisteredSuccess(object token) { }
+        static Task OnRegisteredSuccess(object token) => Task.CompletedTask;
 
-        static async Task OnUnregisteredSuccess() { }
+        static Task OnUnregisteredSuccess() => Task.CompletedTask;
     }
 }

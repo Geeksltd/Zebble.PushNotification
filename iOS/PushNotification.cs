@@ -7,6 +7,7 @@ namespace Zebble.Device
     using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using UIKit;
+    using Olive;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     partial class PushNotification
@@ -89,7 +90,7 @@ namespace Zebble.Device
 
         static async Task OnUnregisteredSuccess()
         {
-            await UnRegistered.RaiseOn(Thread.Pool);
+            await Unregistered.RaiseOn(Thread.Pool);
             SetUserDefault(string.Empty);
         }
 

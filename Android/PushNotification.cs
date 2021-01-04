@@ -2,6 +2,7 @@ namespace Zebble.Device
 {
     using Android.App;
     using Android.Content;
+    using Context = Android.Content.Context;
     using Android.Gms.Extensions;
     using Firebase.Iid;
     using Firebase.Messaging;
@@ -11,6 +12,7 @@ namespace Zebble.Device
     using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
+    using Olive;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     partial class PushNotification
@@ -31,7 +33,7 @@ namespace Zebble.Device
             }
             catch (Exception ex)
             {
-                throw new Exception("Push-Notification registeration failed: " + ex);
+                throw new Exception("Push-Notification registration failed: " + ex);
             }
         }
 
@@ -42,11 +44,11 @@ namespace Zebble.Device
             try
             {
                 FirebaseInstanceId.Instance.DeleteToken(SenderId, FirebaseMessaging.InstanceIdScope);
-                await UnRegistered.RaiseOn(Thread.Pool);
+                await Unregistered.RaiseOn(Thread.Pool);
             }
             catch (IOException ex)
             {
-                await ReceivedError.RaiseOn(Thread.Pool, "Failed to unregister Push Notification: " + ex);
+                await ReceivedError.RaiseOn(Thread.Pool, "Failed to un-register PushNotification: " + ex);
             }
         }
 
@@ -56,7 +58,7 @@ namespace Zebble.Device
             {
                 if (!task.IsSuccessful)
                 {
-                    Log.Error("Push-Notification retrieving token was not successful!");
+                    Log.Error("PushNotification retrieving token was not successful!");
                     return;
                 }
 
@@ -67,7 +69,7 @@ namespace Zebble.Device
         }
 
         [Service]
-        [IntentFilter(new [] { "com.google.firebase.INSTANCE_ID_EVENT" })]
+        [IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
         internal class RefreshService : FirebaseMessagingService
         {
             public override void OnNewToken(string p0)
@@ -92,7 +94,7 @@ namespace Zebble.Device
         }
 
         [Service]
-        [IntentFilter(new [] { "com.google.firebase.MESSAGING_EVENT" })]
+        [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
         internal class PushNotificationGcmListener : FirebaseMessagingService
         {
             static Context Context => UIRuntime.CurrentActivity;
