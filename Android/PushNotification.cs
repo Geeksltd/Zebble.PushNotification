@@ -37,14 +37,14 @@ namespace Zebble.Device
             }
         }
 
-        static Task DoUnregister() => Thread.Pool.Run(DoUnregisterOnThreadPool);
+        static Task DoUnRegister() => Thread.Pool.Run(DoUnRegisterOnThreadPool);
 
-        static async Task DoUnregisterOnThreadPool()
+        static async Task DoUnRegisterOnThreadPool()
         {
             try
             {
                 FirebaseInstanceId.Instance.DeleteToken(SenderId, FirebaseMessaging.InstanceIdScope);
-                await Unregistered.RaiseOn(Thread.Pool);
+                await UnRegistered.RaiseOn(Thread.Pool);
             }
             catch (IOException ex)
             {
@@ -139,7 +139,7 @@ namespace Zebble.Device
 
         static async Task OnRegisteredSuccess(object token) { }
 
-        static async Task OnUnregisteredSuccess() { }
+        static async Task OnUnRegisteredSuccess() { }
 
         [EscapeGCop("LowerCase property name is ok.")]
         internal class AndroidNotificationMessage

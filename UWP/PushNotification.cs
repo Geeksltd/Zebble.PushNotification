@@ -66,7 +66,7 @@ namespace Zebble.Device
             await Registered.RaiseOn(Thread.Pool, Channel?.Uri);
         }
 
-        static Task DoUnregister()
+        static Task DoUnRegister()
         {
             if (Channel != null)
             {
@@ -74,13 +74,13 @@ namespace Zebble.Device
                 Channel = null;
             }
 
-            return Unregistered.RaiseOn(Thread.Pool);
+            return UnRegistered.RaiseOn(Thread.Pool);
         }
 
         static void OnReceived(PushNotificationChannel _, PushNotificationReceivedEventArgs args) => OnMessageReceived(args);
 
         static Task OnRegisteredSuccess(object token) => Task.CompletedTask;
 
-        static Task OnUnregisteredSuccess() => Task.CompletedTask;
+        static Task OnUnRegisteredSuccess() => Task.CompletedTask;
     }
 }
