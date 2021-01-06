@@ -40,7 +40,7 @@ namespace Zebble.Device
 
         static Task DoUnRegister()
         {
-            UIApplication.SharedApplication.UnRegisterForRemoteNotifications();
+            UIApplication.SharedApplication.UnregisterForRemoteNotifications();
             return OnUnRegisteredSuccess();
         }
 
