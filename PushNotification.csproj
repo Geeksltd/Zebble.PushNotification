@@ -7,7 +7,7 @@
     <RootNamespace>Zebble</RootNamespace>
     <PackageId>Zebble.PushNotification</PackageId>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <Version>4.0.187.0</Version>
+    <Version>4.0.188.0</Version>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <LangVersion>default</LangVersion>
@@ -42,6 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <DefineConstants>ANDROID</DefineConstants>
+    <AndroidUseIntermediateDesignerFile>false</AndroidUseIntermediateDesignerFile>
   </PropertyGroup>
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
     <DefineConstants>IOS</DefineConstants>
@@ -66,8 +67,7 @@
     <None Remove="Zebble-LicenseAgreement.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Zebble" Version="4.5.428" />
-    <PackageReference Include="Zebble.LocalNotification" Version="1.1.140" />
+    <PackageReference Include="Zebble.LocalNotification" Version="1.1.141" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Android\" />
