@@ -58,7 +58,7 @@ namespace Zebble.Device
             {
                 if (!task.IsSuccessful)
                 {
-                    Log.For(this).Error(null, "PushNotification retrieving token was not successful!");
+                    Log.For(this).Error("PushNotification retrieving token was not successful!");
                     return;
                 }
 

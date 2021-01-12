@@ -67,7 +67,7 @@
     <None Remove="Zebble-LicenseAgreement.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Zebble.LocalNotification" Version="1.1.143" />
+    <PackageReference Include="Zebble.LocalNotification" Version="1.1.144" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Android\" />

@@ -33,7 +33,7 @@ namespace Zebble.Device
 
         static PushNotification()
         {
-            ReceivedError.Handle(error => Log.For(typeof(PushNotification)).Error(null, "Push Notification Error: " + error));
+            ReceivedError.Handle(error => Log.For(typeof(PushNotification)).Error("Push Notification Error: " + error));
             Init();
         }
 
