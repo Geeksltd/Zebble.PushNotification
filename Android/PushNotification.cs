@@ -58,7 +58,7 @@ namespace Zebble.Device
             {
                 if (!task.IsSuccessful)
                 {
-                    Log.Error("PushNotification retrieving token was not successful!");
+                    Log.For(this).Error(null, "PushNotification retrieving token was not successful!");
                     return;
                 }
 
@@ -82,7 +82,7 @@ namespace Zebble.Device
                     {
                         var token = p0;
                         await Registered.RaiseOn(Thread.Pool, token);
-                        Log.Message("Refreshed token: " + token);
+                        Log.For(this).Debug("Refreshed token: " + token);
                     }
                     catch (Exception ex)
                     {
