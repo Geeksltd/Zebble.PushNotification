@@ -1,155 +1,145 @@
-[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.PushNotification/master/Shared/Icon.png "Zebble.PushNotification"
+
+# What is Push Notification?
+Push Notification is the standard mechanism for a server app to send a message to a mobile app installation.
+Such messages are sent indirectly, through a PNS (Push Notification Service) such as
+
+- Apple: APNs (Apple Push Notification Service)
+- Google: FCM (Firebase Cloud Messaging)
+- Windows: WNS (Windows Notification Service)
 
 
-## Zebble.PushNotification
+# Zebble.PushNotification
 
+[logo]: https://github.com/Geeksltd/Zebble.PushNotification/raw/master/icon.png "Zebble.PushNotification"
 ![logo]
 
-A Zebble plugin that allow you to using push notification services.
-
+This is a Zebble plugin that allow you to use push notification services.
 
 [![NuGet](https://img.shields.io/nuget/v/Zebble.PushNotification.svg?label=NuGet)](https://www.nuget.org/packages/Zebble.PushNotification/)
+It is available on NuGet: [https://www.nuget.org/packages/Zebble.PushNotification/](https://www.nuget.org/packages/Zebble.PushNotification/)
 
-> Push Notification (PN) service is used to allow a server app to push notifications to mobile app installations. The server app will dispatch notifications to the mobile device indirectly, by sending it to a PN service:<br>
-Apple: APNs (Apple Push Notification Service)<br>
-Google: GCM (Google Cloud Messaging)<br>
-Windows: WNS (Windows Notification Service)<br>
+# How does it work?
 
-<br>
+The user should be prompted to allow notifications. Usually the app will show a message to explain the reason and get the user's permission.
+Once the user has accepted this, the registration process takes place.
+
+1. The Zebble mobile app registers for push notifications with the PN Service.
+1. PNS sends a unique `token` back to the app, which is the **unique id of that installation**.
+1. The app will then register the `token` with the server app (via its API).
+1. The server app will store this token as an `App Installation Record` in the database, with that user's ID.
+
+At this stage, the server side app will be able to send messages to the installation token by calling the appropriate API on the PNS.
+To the server app, that token, is effectively an address to reach the user on a specific device.
+
+> Each message/payload (including json data) should not be more than 2KB. 
+
+---
+
+# Registeration (Google)
+
+- If you don't already have one, create your app account in the `Firebase Console`.
+- A Server API key and a Client ID are automatically generated for the app. This information is packaged in a `google-services.json` file that is automatically downloaded when you click **ADD APP**. Save this file in a safe place.
+
+1. Next to the `Project overview` click on the Cog icon.
+2. Select `Cloud Messaging`
+3. Under `Web Configuration` generate a key pair. You will need it for your appSettings.json
+
+---
+
+# Registration (Apple)
+
+### App ID
+For using apple services you need to register your application in Apple developer portal to have a `Bundle ID`. Follow the instructions in the following link:  
+https://developer.apple.com/library/content/documentation/IDEs/Conceptual/AppDistributionGuide/MaintainingProfiles/MaintainingProfiles.html
+
+An `App ID` is a two-part string used to identify one or more apps from a single development team:
+
+- The string consists of a `Team ID` and a `bundle ID Search string` joined together with a "." character.
+- `Team ID` is supplied by Apple and is unique to a specific development team.
+- `Bundle ID search string` is supplied by you to match either the bundle ID of a single app or a set of bundle IDs for a group of your apps.
+
+---
+
+### Certificate
+
+Read https://github.com/Redth/PushSharp/wiki/How-to-Configure-&-Send-Apple-Push-Notifications-using-PushSharp
+
+- Activate push certificates on the Apple Developer Portal.
+- The iOS Application Bundle identifier must be the same corresponding to the profile used for code signing the app.
+- Right click on your Zebble iOS project in Visual Studio
+- Go to `iOS Applciation` tab
+- Set `Identifier` field to the Bundle ID you set in the previous step
+- Now you should have a `.p12` file which can be used in your server side application to send push notifications.
 
 
-### Setup
-* Available on NuGet: [https://www.nuget.org/packages/Zebble.PushNotification/](https://www.nuget.org/packages/Zebble.PushNotification/)
-* Install in your platform client projects.
-* Available for iOS, Android and UWP.
-<br>
+# Server side (ASP.NET)
 
+### appSettings.json
 
-### Api Usage
+```json
+{
+     ...
+     "PN.Apple.Environment": "Sandbox", // -----> use "Production" for live
+     "PN.Apple.CertificateFile": "...",
+     "PN.Apple.CertificatePassword": "...",
+     
+     "PN.Google.SenderId": "...",
+     "PN.Google.AuthToken": "..."
+     
+    "PN.Windows.PackageName": "...",
+    "PN.Windows.PackageSID": "...",
+    "PN.Windows.ClientSecret": "..."
+}
+```
 
-The Zebble mobile app registers for push notifications with the PN service.
-PNs sends a unique token back to the app, which is the unique id of that installation.
-The app will then register the token with the server app (via its API).
-The server app will store this token as an App Installation Record in the database.
-Normally the installation token is also associated to a USER record in cases where the mobile app user is registered.
-Then later on, the server app can deliver notifications to each token (i.e. mobile app installation) via the PNs.
+> Get your SenderID and Auth Token from `Firebase Console` > `Cloud Messaging` > `project Settings`.
 
-##### Notes
+---
 
-The message/payload (including json data) should not be more than  256 bytes for Apple,  2KB for Android, and  5KB for Windows.
-Within the above limit, you can send and command readable by the mobile app.
- 
-#### Implementation in the App
-The Zebble project template contains a file named `App.UI\PushNotificationListener.cs` All you need to do is fill in the blanks. It's fairly self explanatory.
+# Mobile app
 
-### Platform Specific Notes
+### App.UI\PushNotificationListener.cs
 
-#### IOS
+> The project template contains this file. Fill in the blanks. It's fairly self explanatory.
 
-If you want your app to receive push notifications in the background (i.e. when it's not open on the device) then:
+---
 
-##### In `Info.plist` add the following:
+### Info.plist
 ```xml
 <key>UIBackgroundModes</key>
 <array>
     <string>remote-notification</string>
 </array>
 ```
-Also in Entitlements.plist add the following as the content of dict tag:
+---
+
+### Entitlements.plist
+
+Add the following as the content of dict tag:
 ```xml
 <key>aps-environment</key>
 <string>development</string>
 ```
-and set the correct CodesignProvision in the iOS project properties.
+---
 
-##### Bundle ID for using Apple Services:
+### iOS.csproj
+Set the correct `CodesignProvision` in the iOS project properties.
 
-For using apple services you need to register your application in Apple developer portal to have a Bundle ID. Follow the instructions in the following link:  
-https://developer.apple.com/library/content/documentation/IDEs/Conceptual/AppDistributionGuide/MaintainingProfiles/MaintainingProfiles.html
+- Go to the `Properties` section of your iOS project in Visual Studio. 
+- Under iOS Application tab, scroll down to the "Background Modes" section. Enable `Remote notifications options` and `RemoteNotifications`.
 
-##### APP ID vs Bundle ID:
-An App ID is a two-part string used to identify one or more apps from a single development team. The string consists of a Team ID and a bundle ID search string, with a period (.) separating the two parts. The Team ID is supplied by Apple and is unique to a specific development team, while the bundle ID search string is supplied by you to match either the bundle ID of a single app or a set of bundle IDs for a group of your apps.
+> If you face any problems, check out the helper class on content folder, and `PushNotificationApplicationDelegate.txt`.
 
-##### Get a certificate for Push Notifications service:
-
-https://github.com/Redth/PushSharp/wiki/How-to-Configure-&-Send-Apple-Push-Notifications-using-PushSharp
-
-Activate push certificates on the Apple Developer Portal.
-The iOS Application Bundle identifier must be the same corresponding to the profile used for code signing the app.
-Right click on your Zebble iOS project in Visual Studio
-Go to `iOS Applciation` tab
-Set `Identifier` field to the Bundle ID you set in the previous step
-Now you should have a `.p12` file which can be used in your server side application to send push notifications.
-
-##### Server app
-Add the following to your web.config of your server application (API):
-```xml
-    <add key="PN.Apple.Environment" value="Sandbox"/>  <! -- use "Production" for live -->
-    <add key="PN.Apple.CertificateFile" value="" />
-    <add key="PN.Apple.CertificatePassword" value="" />
-```
-##### Background mode
-To support the background mode,  go to the Properties section of your iOS project in Visual Studio. Under iOS Application tab, scroll down to the "Background Modes" section and enable the Remote notifications option, and RemoteNotifications.
-
-If you face any problems, check out the helper class on content folder: 
-`PushNotificationApplicationDelegate.txt`. In order to setup correctly.
-
-### Android
-
-##### Setting Up Firebase Cloud Messaging
-Before you can use FCM services in your app, you must create a new project (or import an existing project) via the Firebase Console. Use the following steps to create a Firebase Cloud Messaging project for your app:
-
-- Sign into the  Firebase Console with your Google account (i.e., your Gmail address) and click **CREATE NEW PROJECT**.
-
-- In the **Create a project** dialog, enter the name of your project and click **CREATE PROJECT**. In the following example, a new project called **YourProjectName** is created.
-
-
-- In the Firebase Console **Overview**, click **Add Firebase to your Android app**.
-
-
-- In the next screen, enter the package name of your app. In this example, the package name is **com.xamarin.fcmexample**. This value must match the package name of your Android app. An app nickname can also be entered in the App nickname field:
-Click **ADD APP**.
-
-
-A Server API key and a Client ID are automatically generated for the app. This information is packaged in a `google-services.json` file that is automatically downloaded when you click **ADD APP**. Be sure to save this file in a safe place.
-
-##### Set the Package Name
-In Firebase Cloud Messaging, you specified a package name for the FCM-enabled app. This package name also serves as the application ID that is associated with the API key. Configure the app to use this package name:
-
-- Open the properties for your project.
-
-- In the Android Manifest page, set the package name.
-
-##### Add the Zebble.PushNotification Package 
-
-- In Visual Studio, right-click References > Manage NuGet Packages.
-
-- Click the Browse tab and search for Zebble.PushNotification.
-
-- Install this package into your project.
-
+---
  
-##### Add the Google Services JSON File
-The next step is to add the `google-services.json` file to the root directory of your project:
+### google-services.json (Android)
 
-- Copy `google-services.json` to the project folder.
+Add `google-services.json` to the Android project folder with `Build Action` set to `GoogleServicesJson` (if the GoogleServicesJson build action is not shown, save and close the Solution, then reopen it).
 
-- Add `google-services.json` to the app project (click Show All Files in the Solution Explorer, right click `google-services.json`, then select Include in Project).
-
-- Select `google-services.json` in the Solution Explorer window.
-
-- In the Properties pane, set the Build Action to GoogleServicesJson (if the GoogleServicesJson build action is not shown, save and close the Solution, then reopen it).
-
-##### Server application 
-Add the following to your **web.config** of your server application (API):
-```xml
-<add key="PN.Google.SenderId" value="Your_Sender_Id" />
-<add key="PN.Google.AuthToken" value="Your_Server_Key" />
-```
-These two values will be avaialable in your project Settings > Cloud Messaging section of Firebase Console:
+---
  
-##### Add Permissions to the Android Manifest
-An Android application must have the following permissions configured before it can receive notifications from Google Cloud Messaging:
+### Android\Properties\AndroidManifest.xml
+
 ```xml
 <application android:label="Project Title">
 <receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
@@ -161,16 +151,4 @@ An Android application must have the following permissions configured before it 
 </intent-filter>
 </receiver>
 </application>
-```
-
-##### Important:
-For push notification to work properly on Android devices, you need to Clean/Rebuild the Solution and then delete obj and bin folders inside the Android project.
-
-#### UWP
-
-Add the following to your web.config of your server application (API):
-```xml
-<add key="PN.Windows.PackageName" value="" />
-<add key="PN.Windows.PackageSID" value="" />
-<add key="PN.Windows.ClientSecret" value="" />
 ```
