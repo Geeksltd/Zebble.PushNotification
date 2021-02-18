@@ -141,13 +141,13 @@ Add `google-services.json` to the Android project folder with `Build Action` set
 
 ```xml
 <application android:label="Project Title">
-<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
-<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
-<intent-filter>
-<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-<category android:name="Package Name" />
-</intent-filter>
-</receiver>
+  <receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
+  <receiver android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
+    <intent-filter>
+      <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+      <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+      <category android:name="Package Name" />
+    </intent-filter>
+  </receiver>
 </application>
 ```
