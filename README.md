@@ -31,7 +31,7 @@ Once the user has accepted this, the registration process takes place.
 At this stage, the server side app will be able to send messages to the installation token by calling the appropriate API on the PNS.
 To the server app, that token, is effectively an address to reach the user on a specific device.
 
-> Each message/payload (including json data) should not be more than 2KB. 
+Each message/payload (including json data) should not be more than 2KB. 
 
 ---
 
@@ -71,6 +71,7 @@ Read https://github.com/Redth/PushSharp/wiki/How-to-Configure-&-Send-Apple-Push-
 - Set `Identifier` field to the Bundle ID you set in the previous step
 - Now you should have a `.p12` file which can be used in your server side application to send push notifications.
 
+---
 
 # Server side (ASP.NET)
 
@@ -91,8 +92,6 @@ Read https://github.com/Redth/PushSharp/wiki/How-to-Configure-&-Send-Apple-Push-
     "PN.Windows.ClientSecret": "..."
 }
 ```
-
-> Get your SenderID and Auth Token from `Firebase Console` > `Cloud Messaging` > `project Settings`.
 
 ---
 
