@@ -35,7 +35,7 @@ Each message/payload (including json data) should not be more than 2KB.
 
 ---
 
-# Registeration (Google)
+# Registration (Google)
 
 - If you don't already have one, create your app account in the `Firebase Console`.
 - A Server API key and a Client ID are automatically generated for the app. This information is packaged in a `google-services.json` file that is automatically downloaded when you click **ADD APP**. Save this file in a safe place.
