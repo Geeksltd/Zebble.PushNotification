@@ -67,7 +67,7 @@ Read https://github.com/Redth/PushSharp/wiki/How-to-Configure-&-Send-Apple-Push-
 - Activate push certificates on the Apple Developer Portal.
 - The iOS Application Bundle identifier must be the same corresponding to the profile used for code signing the app.
 - Right click on your Zebble iOS project in Visual Studio
-- Go to `iOS Applciation` tab
+- Go to `iOS Application` tab
 - Set `Identifier` field to the Bundle ID you set in the previous step
 - Now you should have a `.p12` file which can be used in your server side application to send push notifications.
 
