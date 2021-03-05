@@ -12,7 +12,7 @@ namespace Zebble.Device
     partial class PushNotification
     {
         static PushNotificationChannel Channel;
-        static readonly JsonSerializer Serializer = new JsonSerializer { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+        static readonly JsonSerializer Serializer = new() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
 
         static void Init() { }
 
@@ -66,7 +66,7 @@ namespace Zebble.Device
             await Registered.RaiseOn(Thread.Pool, Channel?.Uri);
         }
 
-        static Task DoUnRegister()
+        static Task DoUnRegister(object userState)
         {
             if (Channel != null)
             {
@@ -74,7 +74,7 @@ namespace Zebble.Device
                 Channel = null;
             }
 
-            return UnRegistered.RaiseOn(Thread.Pool);
+            return UnRegistered.RaiseOn(Thread.Pool, userState);
         }
 
         static void OnReceived(PushNotificationChannel _, PushNotificationReceivedEventArgs args) => OnMessageReceived(args);

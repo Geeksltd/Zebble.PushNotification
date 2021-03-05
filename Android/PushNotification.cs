@@ -37,14 +37,14 @@ namespace Zebble.Device
             }
         }
 
-        static Task DoUnRegister() => Thread.Pool.Run(DoUnRegisterOnThreadPool);
+        static Task DoUnRegister(object userState) => Thread.Pool.Run(() => DoUnRegisterOnThreadPool(userState));
 
-        static async Task DoUnRegisterOnThreadPool()
+        static async Task DoUnRegisterOnThreadPool(object userState)
         {
             try
             {
                 FirebaseInstanceId.Instance.DeleteToken(SenderId, FirebaseMessaging.InstanceIdScope);
-                await UnRegistered.RaiseOn(Thread.Pool);
+                await UnRegistered.RaiseOn(Thread.Pool, userState);
             }
             catch (IOException ex)
             {

@@ -38,10 +38,10 @@ namespace Zebble.Device
             return Task.CompletedTask;
         }
 
-        static Task DoUnRegister()
+        static Task DoUnRegister(object userState)
         {
             UIApplication.SharedApplication.UnregisterForRemoteNotifications();
-            return OnUnRegisteredSuccess();
+            return OnUnRegisteredSuccess(userState);
         }
 
         static async Task<bool> OnMessageReceived(object message)
@@ -88,9 +88,9 @@ namespace Zebble.Device
             SetUserDefault(cleanToken);
         }
 
-        static async Task OnUnRegisteredSuccess()
+        static async Task OnUnRegisteredSuccess(object userState)
         {
-            await UnRegistered.RaiseOn(Thread.Pool);
+            await UnRegistered.RaiseOn(Thread.Pool, userState);
             SetUserDefault(string.Empty);
         }
 
