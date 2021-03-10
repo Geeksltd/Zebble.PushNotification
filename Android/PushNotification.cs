@@ -130,7 +130,7 @@ namespace Zebble.Device
                 else
                 {
                     var applicationName = UIRuntime.CurrentActivity.ApplicationInfo.LoadLabel(UIRuntime.CurrentActivity.PackageManager);
-                    LocalNotification.Show(applicationName, message.GetNotification().Body);
+                    LocalNotification.Show(applicationName, notificationObject.Body);
                 }
             }
         }
