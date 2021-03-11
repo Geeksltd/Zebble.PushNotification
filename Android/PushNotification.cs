@@ -2,13 +2,10 @@ namespace Zebble.Device
 {
     using Android.App;
     using Android.Content;
-    using Context = Android.Content.Context;
+
     using Android.Gms.Extensions;
     using Firebase.Iid;
     using Firebase.Messaging;
-    using Java.IO;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
@@ -21,19 +18,25 @@ namespace Zebble.Device
 
         static void Init() { }
 
-        static Task DoRegister()
+        static async Task DoRegister()
         {
             try
             {
                 Firebase.FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
-                FirebaseInstanceId.Instance.GetInstanceId()
-                    .AddOnCompleteListener(UIRuntime.CurrentActivity, new OnCompleteListener());
 
-                return Task.CompletedTask;
+#if DEBUG
+                try { await Task.Run(() => FirebaseInstanceId.Instance.DeleteInstanceId()); } catch { }
+#endif
+
+                var result = await FirebaseInstanceId.Instance.GetInstanceId().AsAsync<IInstanceIdResult>();
+
+                if (result == null) throw new Exception("Failed to obtain the token");
+
+                await Registered.RaiseOn(Thread.Pool, result.Token);
             }
             catch (Exception ex)
             {
-                throw new Exception("Push-Notification registration failed: " + ex);
+                await ReceivedError.RaiseOn(Thread.Pool, "Failed to register PushNotification: " + ex);
             }
         }
 
@@ -43,34 +46,18 @@ namespace Zebble.Device
         {
             try
             {
-                FirebaseInstanceId.Instance.DeleteToken(SenderId, FirebaseMessaging.InstanceIdScope);
+                await Task.Run(() => FirebaseInstanceId.Instance.DeleteInstanceId());
                 await UnRegistered.RaiseOn(Thread.Pool, userState);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 await ReceivedError.RaiseOn(Thread.Pool, "Failed to un-register PushNotification: " + ex);
             }
         }
 
-        internal class OnCompleteListener : Java.Lang.Object, Android.Gms.Tasks.IOnCompleteListener
-        {
-            public async void OnComplete(Android.Gms.Tasks.Task task)
-            {
-                if (!task.IsSuccessful)
-                {
-                    Log.For(this).Error("PushNotification retrieving token was not successful!");
-                    return;
-                }
-
-                var currentTask = await task.AsAsync<IInstanceIdResult>();
-                if (currentTask != null)
-                    await Registered.RaiseOn(Thread.Pool, currentTask.Token);
-            }
-        }
-
         [Service]
         [IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
-        internal class RefreshService : FirebaseMessagingService
+        public class RefreshService : FirebaseMessagingService
         {
             public override void OnNewToken(string p0)
             {
@@ -95,9 +82,8 @@ namespace Zebble.Device
 
         [Service]
         [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
-        internal class PushNotificationGcmListener : FirebaseMessagingService
+        public class PushNotificationGcmListener : FirebaseMessagingService
         {
-            static Context Context => UIRuntime.CurrentActivity;
             public override void OnMessageReceived(RemoteMessage message)
             {
                 var notificationObject = message.GetNotification();
@@ -117,8 +103,7 @@ namespace Zebble.Device
 
                 if (ReceivedMessage.IsHandled())
                 {
-                    var values = JObject.Parse(JsonConvert.SerializeObject(notifyMessage));
-                    var notification = new Zebble.Device.LocalNotification.Notification
+                    var notification = new LocalNotification.Notification
                     {
                         Title = notificationObject.Title,
                         Body = notificationObject.Body,
