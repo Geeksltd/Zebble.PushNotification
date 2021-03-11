@@ -176,6 +176,29 @@ public class iOSUserDevice : IUserDevice
 }
 ```
 
+#### Note
+`AddPushNotification` method has another overload accepting an implementation of `ISubscriptionIdResolver`, which will notify you if you used an expired token to send push notifications. Below you'll find a sample implementation:
+
+```c#
+public class SubscriptionIdResolver : ISubscriptionIdResolver
+{
+    public async Task ResolveExpiredSubscription(string oldSubscriptionId, string newSubscriptionId)
+    {
+        // Find all devices matching old expired id
+        var devices = (await Database.Of<Device>()
+		.Where(d => d.PushNotificationToken == oldSubscriptionId)
+		.GetList()).ToArray();
+
+	if (devices.None()) return;
+
+	newSubscriptionId = newSubscriptionId.OrNullIfEmpty();
+
+	// Replace push notification token in your records, with the updated one or null (if nothing provided 
+	await Database.Update(devices, x => x.PushNotificationToken = newSubscriptionId);
+    }
+}
+```
+
 It's better you add your class in **Domain** project under **Logic** folder.
 
 ### Sending Push Notification 
