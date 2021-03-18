@@ -130,6 +130,8 @@ Add `google-services.json` to the Android project folder with `Build Action` set
 </application>
 ```
 
+Note: `${applicationId}` will be replaced with your app's package name automatically during build process.
+
 ---
 
 # Server side (ASP.NET)
