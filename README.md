@@ -124,7 +124,7 @@ Add `google-services.json` to the Android project folder with `Build Action` set
     <intent-filter>
       <action android:name="com.google.android.c2dm.intent.RECEIVE" />
       <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-      <category android:name="Package Name" />
+      <category android:name="${applicationId}" />
     </intent-filter>
   </receiver>
 </application>
