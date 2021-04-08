@@ -239,3 +239,11 @@ async void SendPushNotificationService()
     PushNotificationService.Send("Title", "Geeks push notification", items);
 }
 ```
+
+### Troubleshooting
+
+We will update this list with common issues you might face when testing your app.
+
+#### In iOS, I do not receive any push notifications in the production
+
+Start the investigation by checking your server-side logs and look for `ConnectionError` occurrences. If you found anything, a possible cause can be related to your production certificate. Try to reissue your production certificate again and don't forget to upload the corresponding `.p12` again to the server.
