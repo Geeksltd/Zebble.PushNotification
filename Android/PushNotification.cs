@@ -55,7 +55,7 @@ namespace Zebble.Device
             }
         }
 
-        [Service]
+        [Service(Exported = false)]
         [IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
         public class RefreshService : FirebaseMessagingService
         {
@@ -80,7 +80,7 @@ namespace Zebble.Device
             }
         }
 
-        [Service]
+        [Service(Exported = false)]
         [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
         public class PushNotificationGcmListener : FirebaseMessagingService
         {
