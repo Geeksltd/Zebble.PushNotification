@@ -23,35 +23,10 @@ namespace Zebble.Device
             try
             {
                 Firebase.FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
-
-#if DEBUG
-                try { await Task.Run(() => FirebaseInstanceId.Instance.DeleteInstanceId()); } catch { }
-#endif
-
-                var result = await FirebaseInstanceId.Instance.GetInstanceId().AsAsync<IInstanceIdResult>();
-
-                if (result == null) throw new Exception("Failed to obtain the token");
-
-                await Registered.RaiseOn(Thread.Pool, result.Token);
             }
             catch (Exception ex)
             {
                 await ReceivedError.RaiseOn(Thread.Pool, "Failed to register PushNotification: " + ex);
-            }
-        }
-
-        static Task DoUnRegister(object userState) => Thread.Pool.Run(() => DoUnRegisterOnThreadPool(userState));
-
-        static async Task DoUnRegisterOnThreadPool(object userState)
-        {
-            try
-            {
-                await Task.Run(() => FirebaseInstanceId.Instance.DeleteInstanceId());
-                await UnRegistered.RaiseOn(Thread.Pool, userState);
-            }
-            catch (Exception ex)
-            {
-                await ReceivedError.RaiseOn(Thread.Pool, "Failed to un-register PushNotification: " + ex);
             }
         }
 

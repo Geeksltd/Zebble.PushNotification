@@ -48,11 +48,7 @@ namespace Zebble.Device
 
         public static async Task UnRegister(object userState = null, OnError errorAction = OnError.Toast)
         {
-            try { await Thread.UI.Run(() => DoUnRegister(userState)); }
-            catch (Exception ex)
-            {
-                await errorAction.Apply(ex, "Failed to un-register from push notification.");
-            }
+
         }
 
         public static async Task<bool> OnMessageReceived(object message, OnError errorAction = OnError.Toast)
