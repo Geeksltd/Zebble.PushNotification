@@ -10,6 +10,8 @@ namespace Zebble.Device
     using System.ComponentModel;
     using System.Threading.Tasks;
     using Olive;
+    using Firebase.Installations;
+    using Firebase;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     partial class PushNotification
@@ -18,21 +20,16 @@ namespace Zebble.Device
 
         static void Init() { }
 
+        static Firebase.FirebaseApp FirebaseApp;
         static async Task DoRegister()
         {
             try
             {
-                Firebase.FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
-
-#if DEBUG
-                try { await Task.Run(() => FirebaseInstanceId.Instance.DeleteInstanceId()); } catch { }
-#endif
-
-                var result = await FirebaseInstanceId.Instance.GetInstanceId().AsAsync<IInstanceIdResult>();
+                FirebaseApp = Firebase.FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
+                
+                var result = FirebaseInstallations.GetInstance(FirebaseApp);
 
                 if (result == null) throw new Exception("Failed to obtain the token");
-
-                await Registered.RaiseOn(Thread.Pool, result.Token);
             }
             catch (Exception ex)
             {
@@ -46,7 +43,7 @@ namespace Zebble.Device
         {
             try
             {
-                await Task.Run(() => FirebaseInstanceId.Instance.DeleteInstanceId());
+                await Task.Run(() => FirebaseApp.Delete());
                 await UnRegistered.RaiseOn(Thread.Pool, userState);
             }
             catch (Exception ex)

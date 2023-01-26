@@ -52,7 +52,7 @@
     <Compile Include="UWP\**\*.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
-    <PackageReference Include="Xamarin.Firebase.Messaging" Version="121.0.1" />
+    <PackageReference Include="Xamarin.Firebase.Messaging" Version="123.1.1" />
     <PackageReference Include="Xamarin.Google.Dagger" Version="2.27.0" />
     <Compile Include="Android\**\*.cs" />
   </ItemGroup>
@@ -66,7 +66,7 @@
     <None Remove="Zebble-LicenseAgreement.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Zebble.LocalNotification" Version="1.1.160" />
+    <PackageReference Include="Zebble.LocalNotification" Version="1.1.164" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Android\" />
