@@ -72,7 +72,7 @@ namespace Zebble.Device
             else
             {
                 var applicationName = NSBundle.MainBundle.InfoDictionary.ObjectForKey(NSObject.FromObject("CFBundleName")).ToString();
-                await LocalNotification.Show(applicationName, values["body"].Value<string>());
+                await LocalNotification.Show(applicationName, values["body"].Value<string>(), string.Empty);
             }
 
             return true;

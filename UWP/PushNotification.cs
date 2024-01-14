@@ -36,7 +36,7 @@ namespace Zebble.Device
                 else
                 {
                     var applicationName = Windows.ApplicationModel.Package.Current.DisplayName;
-                    await LocalNotification.Show(applicationName, values["body"].Value<string>());
+                    await LocalNotification.Show(applicationName, values["body"].Value<string>(), string.Empty);
                 }
             };
 
