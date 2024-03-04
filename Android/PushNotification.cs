@@ -3,15 +3,13 @@ namespace Zebble.Device
     using Android.App;
     using Android.Content;
 
-    using Android.Gms.Extensions;
-    using Firebase.Iid;
     using Firebase.Messaging;
     using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
     using Olive;
     using Firebase.Installations;
-    using Firebase;
+    using FirebaseApp = Firebase.FirebaseApp;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     partial class PushNotification
@@ -20,12 +18,12 @@ namespace Zebble.Device
 
         static void Init() { }
 
-        static Firebase.FirebaseApp FirebaseApp;
+        static FirebaseApp FirebaseApp;
         static async Task DoRegister()
         {
             try
             {
-                FirebaseApp = Firebase.FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
+                FirebaseApp = FirebaseApp.InitializeApp(UIRuntime.CurrentActivity);
                 
                 var result = FirebaseInstallations.GetInstance(FirebaseApp);
 
@@ -43,7 +41,7 @@ namespace Zebble.Device
         {
             try
             {
-                await Task.Run(() => FirebaseApp.Delete());
+                await Task.Run(FirebaseApp.Delete);
                 await UnRegistered.RaiseOn(Thread.Pool, userState);
             }
             catch (Exception ex)
