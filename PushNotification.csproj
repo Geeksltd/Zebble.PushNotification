@@ -1,12 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.44">
   <PropertyGroup>
-    <TargetFrameworks>Xamarin.iOS10;MonoAndroid13.0;net8.0-android;net8.0-ios</TargetFrameworks>
+    <TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);uap10.0.18362</TargetFrameworks>
     <AssemblyName>Zebble.PushNotification</AssemblyName>
     <RootNamespace>Zebble</RootNamespace>
     <PackageId>Zebble.PushNotification</PackageId>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <Version>5.0.0.0</Version>
+    <Version>5.0.1.0</Version>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <DefineConstants>$(DefineConstants)</DefineConstants>
@@ -52,8 +52,8 @@
     <Compile Include="UWP\**\*.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(DefineConstants.Contains('ANDROID')) ">
-    <PackageReference Include="Xamarin.Firebase.Messaging" Version="123.3.1.1" />
-    <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.1" />
+    <PackageReference Include="Xamarin.Firebase.Messaging" Version="124.0.0" />
+    <PackageReference Include="Xamarin.Google.Dagger" Version="2.50.0" />
     <Compile Include="Android\**\*.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(DefineConstants.Contains('IOS')) ">
@@ -66,6 +66,6 @@
     <None Remove="Zebble-LicenseAgreement.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Zebble.LocalNotification" Version="2.0.0" />
+    <PackageReference Include="Zebble.LocalNotification" Version="2.0.1" />
   </ItemGroup>
 </Project>
